@@ -150,10 +150,22 @@ if __name__ == "__main__":
             # ds9.display(*array_images)
 
             # Method 2
+            '''
             for f in list_images_filenames:
-                process = subprocess.Popen(['open',f], stdout=subprocess.PIPE)
+                #f = f + ' &'
+                process = subprocess.Popen(['ds9',f,'&'], stdout=subprocess.PIPE, shell=True)
                 output, error = process.communicate()
                 time.sleep(2)
+            '''
+            command = '' 
+            for f in list_images_filenames:
+                command = command + ' -tile ' + f.replace(' ','\ ')
+            command = 'ds9 ' + command
+            process = subprocess.Popen([command, '&'], stdout=subprocess.PIPE, shell=True)    
+            # we can make the command below to a comment, if you do that, the result will be displayed directly on the shell without waiting for the end of the ds9 thread
+            # we can also add a parameter "timeout" in the function communicate(), optional 
+            output, error = process.communicate()
+            time.sleep(1)
                 
     if untar:
         if len(list_specal_charac_tar_files)>0:
@@ -166,7 +178,7 @@ if __name__ == "__main__":
 
                 file_to_open = os.path.join(dirname,'Reduction_0000/PointSource_astro_photo/comp_astro_photo_tdb.csv')
                 print('Open',file_to_open)
-                process = subprocess.Popen(['open',file_to_open], stdout=subprocess.PIPE)
+                process = subprocess.Popen(['libreoffice',file_to_open], stdout=subprocess.PIPE)
                 output, error = process.communicate()
 
         if len(list_contrast_curves_tar_files)>0:
